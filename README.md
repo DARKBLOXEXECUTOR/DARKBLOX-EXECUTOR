@@ -7,238 +7,214 @@ here it is!
 local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
--- Colors for gold theme
-local goldMain = Color3.fromRGB(212, 175, 55)
-local goldDark = Color3.fromRGB(160, 130, 30)
-local goldLight = Color3.fromRGB(255, 223, 93)
+-- Main GUI container
+local darkbloxGui = Instance.new("ScreenGui")
+darkbloxGui.Name = "DarkBloxExecutor"
+darkbloxGui.ResetOnSpawn = false
+darkbloxGui.Parent = playerGui
 
--- Create ScreenGui
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "DarkBloxExecutorGui"
-screenGui.Parent = playerGui
-screenGui.ResetOnSpawn = false
+-- Splash Screen
+local splash = Instance.new("TextLabel")
+splash.Size = UDim2.new(1, 0, 1, 0)
+splash.BackgroundColor3 = Color3.new(0, 0, 0)
+splash.Text = "DARKBLOX SCRIPT LOADED!"
+splash.Font = Enum.Font.GothamBlack
+splash.TextColor3 = Color3.fromRGB(255, 215, 0)
+splash.TextScaled = true
+splash.Parent = darkbloxGui
 
--- Function to make frames draggable
-local function makeDraggable(frame)
-    local dragging, dragInput, dragStart, startPos
+task.wait(2)
+for i = 1, 20 do
+	splash.TextTransparency = i * 0.05
+	splash.BackgroundTransparency = i * 0.05
+	task.wait(0.05)
+end
+splash:Destroy()
 
-    local function update(input)
-        local delta = input.Position - dragStart
-        frame.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
-        )
-    end
+-- Main Frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 420, 0, 320)
+frame.Position = UDim2.new(0.5, -210, 0.5, -160)
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+frame.BorderSizePixel = 0
+frame.BackgroundTransparency = 1
+frame.Parent = darkbloxGui
+frame.Active = true
+frame.Draggable = true
 
-    frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            dragStart = input.Position
-            startPos = frame.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
-
-    frame.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
-            dragInput = input
-        end
-    end)
-
-    game:GetService("UserInputService").InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
-            update(input)
-        end
-    end)
+-- Fade-in effect for frame
+for i = 20, 0, -1 do
+	frame.BackgroundTransparency = i * 0.05
+	task.wait(0.03)
 end
 
--- Main executor frame (initially visible)
-local executorFrame = Instance.new("Frame")
-executorFrame.Name = "ExecutorFrame"
-executorFrame.Size = UDim2.new(0, 450, 0, 250)
-executorFrame.Position = UDim2.new(0.5, -225, 0.5, -125)
-executorFrame.BackgroundColor3 = Color3.fromRGB(30, 24, 8)
-executorFrame.BorderSizePixel = 0
-executorFrame.Active = true
-executorFrame.Parent = screenGui
-makeDraggable(executorFrame)
-
--- Title bar
+-- Title Bar
 local titleBar = Instance.new("Frame")
-titleBar.Size = UDim2.new(1, 0, 0, 35)
-titleBar.BackgroundColor3 = goldDark
+titleBar.Size = UDim2.new(1, 0, 0, 40)
+titleBar.BackgroundColor3 = Color3.fromRGB(160, 130, 30)
 titleBar.BorderSizePixel = 0
-titleBar.Parent = executorFrame
+titleBar.Parent = frame
 
 local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(1, -70, 1, 0)
+titleLabel.Size = UDim2.new(1, -60, 1, 0)
 titleLabel.Position = UDim2.new(0, 10, 0, 0)
 titleLabel.BackgroundTransparency = 1
 titleLabel.Text = "✨ DarkBlox Executor"
 titleLabel.Font = Enum.Font.GothamBold
-titleLabel.TextColor3 = goldLight
-titleLabel.TextSize = 20
+titleLabel.TextColor3 = Color3.fromRGB(255, 215, 0)
+titleLabel.TextSize = 22
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 titleLabel.Parent = titleBar
 
--- Close button on title bar
 local closeButton = Instance.new("TextButton")
-closeButton.Size = UDim2.new(0, 30, 0, 30)
-closeButton.Position = UDim2.new(1, -40, 0, 2)
-closeButton.BackgroundColor3 = goldMain
+closeButton.Size = UDim2.new(0, 35, 0, 30)
+closeButton.Position = UDim2.new(1, -45, 0, 5)
+closeButton.BackgroundColor3 = Color3.fromRGB(212, 175, 55)
 closeButton.BorderSizePixel = 0
 closeButton.Text = "✕"
 closeButton.Font = Enum.Font.GothamBold
-closeButton.TextColor3 = Color3.new(0.1, 0.05, 0)
-closeButton.TextSize = 22
+closeButton.TextColor3 = Color3.fromRGB(60, 45, 0)
+closeButton.TextSize = 24
 closeButton.Parent = titleBar
 
--- TextBox for script input
+-- Script TextBox
 local scriptBox = Instance.new("TextBox")
-scriptBox.Size = UDim2.new(1, -40, 0.65, 0)
-scriptBox.Position = UDim2.new(0, 20, 0, 45)
+scriptBox.Size = UDim2.new(0.95, 0, 0.65, 0)
+scriptBox.Position = UDim2.new(0, 10, 0, 50)
 scriptBox.BackgroundColor3 = Color3.fromRGB(40, 35, 10)
-scriptBox.TextColor3 = goldLight
-scriptBox.Text = "-- Write your Lua script here"
+scriptBox.TextColor3 = Color3.fromRGB(255, 215, 0)
 scriptBox.ClearTextOnFocus = false
 scriptBox.TextWrapped = true
 scriptBox.MultiLine = true
-scriptBox.Font = Enum.Font.Gotham
-scriptBox.TextSize = 16
-scriptBox.Parent = executorFrame
+scriptBox.PlaceholderText = "-- Paste or write your Lua script here"
+scriptBox.Font = Enum.Font.Code
+scriptBox.TextSize = 18
+scriptBox.Parent = frame
 
 -- Buttons container
 local buttonsFrame = Instance.new("Frame")
-buttonsFrame.Size = UDim2.new(1, -40, 0, 50)
-buttonsFrame.Position = UDim2.new(0, 20, 1, -60)
+buttonsFrame.Size = UDim2.new(0.95, 0, 0, 45)
+buttonsFrame.Position = UDim2.new(0, 10, 1, -55)
 buttonsFrame.BackgroundTransparency = 1
-buttonsFrame.Parent = executorFrame
+buttonsFrame.Parent = frame
 
--- Utility to create gold buttons
-local function createGoldButton(name, pos, text)
-    local btn = Instance.new("TextButton")
-    btn.Name = name
-    btn.Size = UDim2.new(0, 120, 1, 0)
-    btn.Position = pos
-    btn.BackgroundColor3 = goldMain
-    btn.BorderSizePixel = 0
-    btn.AutoButtonColor = true
-    btn.Font = Enum.Font.GothamBold
-    btn.TextColor3 = Color3.new(0.1, 0.05, 0)
-    btn.TextSize = 18
-    btn.Text = text
-
-    local grad = Instance.new("UIGradient")
-    grad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, goldLight),
-        ColorSequenceKeypoint.new(0.5, goldMain),
-        ColorSequenceKeypoint.new(1, goldLight),
-    })
-    grad.Rotation = 90
-    grad.Parent = btn
-
-    return btn
+local function createButton(name, posX, text)
+	local btn = Instance.new("TextButton")
+	btn.Name = name
+	btn.Size = UDim2.new(0, 130, 1, 0)
+	btn.Position = UDim2.new(0, posX, 0, 0)
+	btn.BackgroundColor3 = Color3.fromRGB(212, 175, 55)
+	btn.BorderSizePixel = 0
+	btn.Font = Enum.Font.GothamBold
+	btn.TextColor3 = Color3.fromRGB(60, 45, 0)
+	btn.TextSize = 20
+	btn.Text = text
+	btn.Parent = buttonsFrame
+	return btn
 end
 
--- Attach button
+local attachBtn = createButton("AttachBtn", 0, "Attach")
+local executeBtn = createButton("ExecuteBtn", 140, "Execute")
+local clearBtn = createButton("ClearBtn", 280, "Clear")
+
+-- Message Label
+local message = Instance.new("TextLabel")
+message.Size = UDim2.new(1, 0, 0, 30)
+message.Position = UDim2.new(0, 0, 1, -90)
+message.BackgroundTransparency = 1
+message.TextColor3 = Color3.fromRGB(255, 215, 0)
+message.Font = Enum.Font.GothamBold
+message.TextSize = 18
+message.Text = ""
+message.Parent = frame
+
 local attached = false
-local attachBtn = createGoldButton("AttachBtn", UDim2.new(0, 0, 0, 0), "Attach")
-attachBtn.Parent = buttonsFrame
+
+-- Attach Button
 attachBtn.MouseButton1Click:Connect(function()
-    if not attached then
-        attached = true
-        attachBtn.Text = "Attached ✅"
-        attachBtn.BackgroundColor3 = goldDark
-    else
-        attached = false
-        attachBtn.Text = "Attach"
-        attachBtn.BackgroundColor3 = goldMain
-    end
+	attached = not attached
+	if attached then
+		attachBtn.Text = "Attached ✅"
+		message.Text = "Executor attached!"
+	else
+		attachBtn.Text = "Attach"
+		message.Text = "Executor detached."
+	end
+	task.delay(2, function()
+		message.Text = ""
+	end)
 end)
 
--- Execute button
-local executeBtn = createGoldButton("ExecuteBtn", UDim2.new(0, 135, 0, 0), "Execute")
-executeBtn.Parent = buttonsFrame
+-- Execute Button
 executeBtn.MouseButton1Click:Connect(function()
-    if not attached then
-        warn("Please attach before executing the script!")
-        return
-    end
-
-    local success, err = pcall(function()
-        local func = loadstring(scriptBox.Text)
-        if func then
-            func()
-        else
-            warn("Invalid script!")
-        end
-    end)
-
-    if not success then
-        warn("Error executing script:", err)
-    end
+	if not attached then
+		message.Text = "⚠️ Attach first!"
+		task.delay(2, function()
+			message.Text = ""
+		end)
+		return
+	end
+	local code = scriptBox.Text
+	local success, err = pcall(function()
+		local func = loadstring(code)
+		if func then func() end
+	end)
+	if success then
+		message.Text = "✅ Script executed!"
+	else
+		message.Text = "❌ Error: "..tostring(err)
+	end
+	task.delay(3, function()
+		message.Text = ""
+	end)
 end)
 
--- Clear button
-local clearBtn = createGoldButton("ClearBtn", UDim2.new(0, 270, 0, 0), "Clear")
-clearBtn.Parent = buttonsFrame
+-- Clear Button
 clearBtn.MouseButton1Click:Connect(function()
-    scriptBox.Text = ""
+	scriptBox.Text = ""
+	message.Text = "Cleared!"
+	task.delay(1.5, function()
+		message.Text = ""
+	end)
 end)
 
--- Close button hides the executorFrame and shows the icon
-closeButton.MouseButton1Click:Connect(function()
-    executorFrame.Visible = false
-    appIcon.Visible = true
-end)
+-- Floating toggle icon to hide/show executor
+local toggleIcon = Instance.new("TextButton")
+toggleIcon.Size = UDim2.new(0, 50, 0, 40)
+toggleIcon.Position = UDim2.new(0, 20, 0, 20)
+toggleIcon.BackgroundColor3 = Color3.fromRGB(160, 130, 30)
+toggleIcon.BorderSizePixel = 0
+toggleIcon.Text = ""
+toggleIcon.Parent = darkbloxGui
+toggleIcon.ZIndex = 10
+toggleIcon.Active = true
+toggleIcon.Draggable = true
 
--- Create floating app icon (computer screen icon)
-local appIcon = Instance.new("Frame")
-appIcon.Size = UDim2.new(0, 50, 0, 40)
-appIcon.Position = UDim2.new(0, 20, 0, 20)
-appIcon.BackgroundColor3 = goldDark
-appIcon.BorderSizePixel = 0
-appIcon.Parent = screenGui
-appIcon.Active = true
-appIcon.ZIndex = 10
-
-local screenPart = Instance.new("Frame")
-screenPart.Size = UDim2.new(0, 44, 0, 30)
-screenPart.Position = UDim2.new(0, 3, 0, 3)
-screenPart.BackgroundColor3 = goldMain
-screenPart.BorderSizePixel = 0
-screenPart.Parent = appIcon
+-- Add computer screen icon (gold lines)
+local screenIcon = Instance.new("Frame")
+screenIcon.Size = UDim2.new(0, 44, 0, 30)
+screenIcon.Position = UDim2.new(0, 3, 0, 5)
+screenIcon.BackgroundColor3 = Color3.fromRGB(212, 175, 55)
+screenIcon.BorderSizePixel = 0
+screenIcon.Parent = toggleIcon
 
 for i = 1, 4 do
-    local line = Instance.new("Frame")
-    line.Size = UDim2.new(1, -14, 0, 3)
-    line.Position = UDim2.new(0, 7, 0, 4 + (i - 1) * 6)
-    line.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-    line.BorderSizePixel = 0
-    line.Parent = screenPart
+	local line = Instance.new("Frame")
+	line.Size = UDim2.new(1, -14, 0, 3)
+	line.Position = UDim2.new(0, 7, 0, 5 + (i - 1) * 6)
+	line.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+	line.BorderSizePixel = 0
+	line.Parent = screenIcon
 end
 
-local stand = Instance.new("Frame")
-stand.Size = UDim2.new(0, 22, 0, 6)
-stand.Position = UDim2.new(0.5, -11, 1, -6)
-stand.BackgroundColor3 = goldDark
-stand.BorderSizePixel = 0
-stand.Parent = appIcon
-
-appIcon.MouseButton1Click = nil
-appIcon.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        executorFrame.Visible = true
-        appIcon.Visible = false
-    end
+local executorVisible = true
+toggleIcon.MouseButton1Click:Connect(function()
+	executorVisible = not executorVisible
+	frame.Visible = executorVisible
+	toggleIcon.Visible = not executorVisible
 end)
 
--- Start with appIcon hidden because executorFrame is visible
-appIcon.Visible = false
-
+closeButton.MouseButton1Click:Connect(function()
+	frame.Visible = false
+	toggleIcon.Visible = true
+end)
